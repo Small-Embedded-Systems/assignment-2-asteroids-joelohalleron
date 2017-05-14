@@ -1,25 +1,44 @@
-/* Asteroids Model */
-struct point {
-    float x,y;
-};
-typedef struct point coordinate_t;
-typedef struct point vector_t;
+/******model.h******/
 
-/* Some insitial struct types if you want to usd them */
+extern const float Dt; /* Time step for physics, needed for consistent motion */
+
+/* Ship Struct to be used in srawing and positioning the ship */
 struct ship {
-    coordinate_t p;
-    vector_t     v;
+	int heading; // heading of the ship
+	float x, y;  //X and Y coordinates of the ships origin
+	float v_x, v_y; //Velocity or movement in the direction of, X and Y respectively
+	
 };
 
-/* initial struts for building linked lists */
-struct rock {
-    coordinate_t p;
-    struct rock *next;
-};
+/*Struct Declarations*/
+struct particle* getParticleList(void);
+struct missileS* getMisLst(void);
 
-struct missile {
-    coordinate_t p;
-    struct missile *next;
-};
+/*Accessor Declarations*/
+double getShipHeading(void); //returns ships heading/direction it is facing
+float getShipX(void); //returns ships x coordinate
+float getShipY(void); //returns ships y coordinate
+float getShipXVelocity(void);//returns ships movement along the x plane
+float getShipYVelocity(void);//returns ships movement along the y plane
 
-void physics(void);
+/*Mutator Method Declarations*/
+void setShipX(float); //sets ship X coordinate
+void setShipY(float); //sets ship y coordinate
+void setShipVelocityX(float);//sets ships movement along x plane
+void setShipVelocityY(float);//sets ships movement along y plane
+void setShipHeading(int);
+
+/*Method Declarations*/
+void physicsAsteroids(void);
+void physicsMissiles(void);
+void updateCall();
+void linkedList(void);
+void particleSystem(void);
+void drawParticles(void);
+void missileSystem(void);
+void updateCallMissiles(void);
+void drawParticlesMissiles(void);
+void collisions(void);
+void wrapAround(void);
+
+

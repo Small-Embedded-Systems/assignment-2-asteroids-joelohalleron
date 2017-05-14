@@ -1,70 +1,51 @@
-/* Asteroids
-    Sample solution for assignment
-    Semester 2 -- Small Embedded Systems
-    Dr Alun Moon
-*/
+
+
+
 
 /* C libraries */
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+#include <utils.h>
+
 #include <string.h>
+#include <display.h>
+
 
 /* hardware platform libraries */
-#include <display.h>
 #include <mbed.h>
-
-/* Main game elements */
-#include "model.h"
-#include "view.h"
+#include "asteroids.h"
 #include "controller.h"
+#include "gamestate.h"
+#include "draw.h"
+#include "model.h"
+#include "node.h"
 
-/* Game state */
-float elapsed_time; 
-int   score;
-int   lives;
-struct ship player;
 
-float Dt = 0.01f;
 
-Ticker model, view, controller;
+/*Initialise the Games tickers for time-loop method calling*/
+Ticker gamestate, drawgame, control, physicsMissilesTick, physicsAsteroidsTick, collisionsTick;
 
-bool paused = true;
-/* The single user button needs to have the PullUp resistor enabled */
-DigitalIn userbutton(P2_10,PullUp);
-int main()
-{
 
-    init_DBuffer();
-    
 
-    view.attach( draw, 0.025);
-    model.attach( physics, Dt);
-    controller.attach( controls, 0.1);
-    
-    lives = 5;
-    
-    /* Pause to start */
-    while( userbutton.read() ){ /* remember 1 is not pressed */
-        paused=true;
-        wait_ms(100);
-    }
-    paused = false;
-    
-    while(true) {
-        /* do one of */
-        /* Wait until all lives have been used
-        while(lives>0){
-            // possibly do something game related here
-            wait_ms(200);
-        }
-        */
-        /* Wait until each life is lost
-        while( inPlay ){
-            // possibly do something game related here
-            wait_ms(200);
-        }
-        */
-    }
-}
+	/*Main method used to attach the programs main methods to tickers, and assign reasonable tick intervals*/
+	int main() 
+	{
+		setShipDeadFalse();
+		srand (time(NULL));
+		srand (1);
+		initialise_heap();
+		initialise_heap_missile();
+		initDoubleBuffering();
+	     
+		gamestate.attach(game, 1.0); 
+		drawgame.attach(draw, 0.025); 
+		physicsMissilesTick.attach(physicsMissiles, 0.1);
+		physicsAsteroidsTick.attach(physicsAsteroids, 0.25);
+		collisionsTick.attach(collisions, 0.01);
+		control.attach(controller, 0.01);
+
+	}
+
+

@@ -1,3 +1,4 @@
+
 #define missile_width 26
 #define missile_height 13
 static unsigned char missile_bits[] = {
@@ -31,6 +32,7 @@ static unsigned char ufo2_bits[] = {
    0x00, 0x00, 0x00, 0xbf, 0xfd, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfc,
    0x7f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x03, 0x00, 0x00, 0x00 };
 
+	 
 #define ufo_width 64
 #define ufo_height 33
 static unsigned char ufo_bits[] = {
@@ -209,28 +211,45 @@ static unsigned char heart_bits[] = {
 
 extern "C" int bitflip(int);
 
-int p;
-for(p=0 ; p<sizeof(missile_bits);p++) {
-    missile_bits[p] = bitflip(missile_bits[p]);
+static bool ufo2Flipped = false; //bool to check if ufo2 method has been flipped
+static int p; //int for use as position of item in bitmap arrays
+	
+
+	 
+/*This method takes an integer as param and returns it's reverse
+	 
+	 @param int b integer to be reversed
+	 @return the reversed integer
+	 */
+extern "C" int bitflip(int b)
+{
+	return ~b;
 }
-for(p=0 ; p<sizeof(ufo2_bits);p++) {
-    ufo2_bits[p] = bitflip(ufo2_bits[p]);
-}
-for(p=0 ; p<sizeof(ufo_bits);p++) {
-    ufo_bits[p] = bitflip(ufo_bits[p]);
-}
-for(p=0 ; p<sizeof(tintin_bits);p++) {
-    tintin_bits[p] = bitflip(tintin_bits[p]);
-}
-for(p=0 ; p<sizeof(rocket2_bits);p++) {
-    rocket2_bits[p] = bitflip(rocket2_bits[p]);
-}
-for(p=0 ; p<sizeof(tintina_bits);p++) {
-    tintina_bits[p] = bitflip(tintina_bits[p]);
-}
-for(p=0 ; p<sizeof(heart_bits);p++) {
-    heart_bits[p] = bitflip(heart_bits[p]);
+	 
+
+
+/*This method reverses the missile bitmap using the bitflip method*/
+unsigned char * missile_bits_flipped(void)
+{
+	for(p=0 ; p<sizeof(missile_bits);p++) {
+			missile_bits[p] = bitflip(missile_bits[p]);
+	}
+	return missile_bits;
 }
 
-lcd->drawBitmap(2,200,tintin_bits,tintin_width,tintin_height,RED);
-lcd->drawBitmap(2,200,tintina_bits,tintina_width,tintina_height,WHITE);
+
+
+/*This method reverses the ufo2 bitmap using the bitflip method*/
+unsigned char * ufo2_bits_flipped(void)
+{
+	if(!ufo2Flipped)//bits aren't flipped
+	{
+		for(p=0 ; p<sizeof(ufo2_bits);p++) {
+				ufo2_bits[p] = bitflip(ufo2_bits[p]);//flip bits
+		}
+		
+		ufo2Flipped = true;//set bits flipped check as true
+	}
+	return ufo2_bits;
+}
+
